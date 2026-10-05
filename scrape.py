@@ -6,24 +6,26 @@ response = requests.get("https://news.ycombinator.com/")
 good_soup = BeautifulSoup(response.text, "html.parser")
 links = good_soup.select(".titleline")
 subtext = good_soup.select(".subtext")
+news_age = good_soup.select(".age")
 
 
 def sort_stories_by_votes(hn_list):
     return sorted(hn_list, key=lambda k: k["votes"], reverse=True)
 
 
-def create_custom_hn(links, subtext):
+def create_custom_hn(links, subtext, news_age):
     hn = []
     for index, link_item in enumerate(links):
         title = link_item.getText()
         href = link_item.a.get("href", None)
         vote = subtext[index].select(".score")
+        age = news_age[index].getText()
         if len(vote):
             points = int(vote[0].getText().replace(" points", ""))
             if points > 99:
-                hn.append({"title": title, "link": href, "votes": points})
+                hn.append({"title": title, "link": href, "votes": points, "age": age})
 
     return sort_stories_by_votes(hn)
 
 
-pprint.pprint(create_custom_hn(links, subtext))
+pprint.pprint(create_custom_hn(links, subtext, news_age))
