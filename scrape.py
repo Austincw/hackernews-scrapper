@@ -8,6 +8,10 @@ links = good_soup.select(".titleline")
 subtext = good_soup.select(".subtext")
 
 
+def sort_stories_by_votes(hn_list):
+    return sorted(hn_list, key=lambda k: k["votes"], reverse=True)
+
+
 def create_custom_hn(links, subtext):
     hn = []
     for index, link_item in enumerate(links):
@@ -19,7 +23,7 @@ def create_custom_hn(links, subtext):
             if points > 99:
                 hn.append({"title": title, "link": href, "votes": points})
 
-    return hn
+    return sort_stories_by_votes(hn)
 
 
 pprint.pprint(create_custom_hn(links, subtext))
